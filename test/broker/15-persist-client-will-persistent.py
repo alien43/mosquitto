@@ -32,6 +32,8 @@ do_test(60, 0, 0, disconnect_rc=send_will_disconnect_rc)
 do_test(60, 1, 0, disconnect_rc=send_will_disconnect_rc)
 do_test(60, 0, 1, disconnect_rc=send_will_disconnect_rc)
 do_test(60, 1, 1, disconnect_rc=send_will_disconnect_rc)
+do_test(0xFFFFFFFF, 1, 0, disconnect_rc=send_will_disconnect_rc)
+
 
 # persistent client disconnecting without will sent before crash
 do_test(60, 0, 0, disconnect_rc=normal_disconnect_rc)
