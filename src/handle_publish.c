@@ -25,6 +25,7 @@ Contributors:
 #include "alias_mosq.h"
 #include "mosquitto/mqtt_protocol.h"
 #include "packet_mosq.h"
+#include "property_common.h"
 #include "property_mosq.h"
 #include "read_handle.h"
 #include "send_mosq.h"
@@ -72,6 +73,8 @@ int handle__accepted_publish(struct mosquitto *context, struct mosquitto__base_m
 	struct mosquitto__client_msg *cmsg_stored = NULL;
 
 	{
+		mosquitto_property *p, *previous = NULL;
+
 		rc = plugin__handle_message_in(context, &base_msg->data);
 		if(rc == MOSQ_ERR_ACL_DENIED){
 			log__printf(NULL, MOSQ_LOG_DEBUG,
@@ -88,6 +91,22 @@ int handle__accepted_publish(struct mosquitto *context, struct mosquitto__base_m
 		}else if(rc != MOSQ_ERR_SUCCESS){
 			db__msg_store_free(base_msg);
 			return rc;
+		}
+
+		p = base_msg->data.properties;
+		while(p){
+			if(mosquitto_property_identifier(p) == MQTT_PROP_MESSAGE_EXPIRY_INTERVAL){
+				*message_expiry_interval = mosquitto_property_int32_value(p);
+				if(p == base_msg->data.properties){
+					base_msg->data.properties = mosquitto_property_next(p);
+				}else{
+					previous->next = mosquitto_property_next(p);
+				}
+				mosquitto_property_free(&p);
+				break;
+			}
+			previous = p;
+			p = mosquitto_property_next(p);
 		}
 	}
 

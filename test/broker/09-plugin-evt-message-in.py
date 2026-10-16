@@ -14,10 +14,20 @@ def do_test():
     suback_packet = mqtt_packets.gen_suback(mid, 2, proto_ver=5)
 
     props = mqtt5_props.gen_string_prop(mqtt5_props.RESPONSE_TOPIC, "response/topic")
-    publish_packet1 = mqtt_packets.gen_publish("subpub/qos2/receive/maximum1", qos=0, payload="message1", proto_ver=5, properties=props)
+    props += mqtt5_props.gen_uint32_prop(mqtt5_props.MESSAGE_EXPIRY_INTERVAL, 60)
+    publish_packet1 = mqtt_packets.gen_publish("subpub/qos2/receive/maximum1", qos=0, retain=True, payload="message1", proto_ver=5, properties=props)
 
     props = mqtt5_props.gen_string_pair_prop(mqtt5_props.USER_PROPERTY, "key", "value")
+    props += mqtt5_props.gen_uint32_prop(mqtt5_props.MESSAGE_EXPIRY_INTERVAL, 1)
     publish_packet2 = mqtt_packets.gen_publish("fixed-topic", qos=0, payload="new-message", proto_ver=5, properties=props)
+
+    mid = 2
+    unsubscribe_packet = mqtt_packets.gen_unsubscribe(mid, "fixed-topic", proto_ver=5)
+    unsuback_packet = mqtt_packets.gen_unsuback(mid, proto_ver=5)
+
+    mid = 3
+    subscribe_packet2 = mqtt_packets.gen_subscribe(mid, "fixed-topic", 2, proto_ver=5)
+    suback_packet2 = mqtt_packets.gen_suback(mid, 2, proto_ver=5)
 
     port = mosq_test.get_port()
     broker_config = BrokerConfig(
@@ -33,6 +43,12 @@ def do_test():
         sock.send(publish_packet1)
         mosq_test.expect_packet(sock, "publish2", publish_packet2)
 
+        mosq_test.do_send_receive(sock, unsubscribe_packet, unsuback_packet, "unsuback")
+        time.sleep(2)
+        mosq_test.do_send_receive(sock, subscribe_packet2, suback_packet2, "suback2")
+        mosq_test.do_ping(sock)
+
         sock.close()
 
 do_test()
+
