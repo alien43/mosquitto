@@ -205,6 +205,7 @@ endif
 	./09-plugin-evt-client-offline.py
 	./09-plugin-evt-message-in.py
 	./09-plugin-evt-message-out.py
+	./09-plugin-evt-persist-will.py
 	./09-plugin-evt-psk-key.py
 	./09-plugin-evt-reload.py
 	./09-plugin-evt-subscribe.py
