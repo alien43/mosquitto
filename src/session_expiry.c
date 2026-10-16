@@ -75,6 +75,7 @@ int session_expiry__add(struct mosquitto *context)
 		if(context->session_expiry_interval == MQTT_SESSION_EXPIRY_NEVER){
 			/* There isn't a global expiry set, and the client has asked to
 			 * never expire, so we don't add it to the list. */
+			plugin_persist__handle_client_update(context);
 			return MOSQ_ERR_SUCCESS;
 		}
 	}
