@@ -25,7 +25,7 @@ publish_packet_recv = mqtt_packets.gen_publish(topic="param/topic", qos=1, paylo
 port = mosq_test.get_port()
 broker_config = BrokerConfig(
     listeners = [ ListenerConfig(port=port) ],
-    plugins = [ PluginConfig(path=mosq_paths.test_plugin(f'auth_plugin_context_params')) ],
+    plugins = [ PluginConfig(path=mosq_paths.test_plugin(f'auth_plugin_context_params'), options={"a": "val1", "db": "val2"}) ],
     allow_anonymous=False,
 )
 broker = MosquittoBroker(config=broker_config)

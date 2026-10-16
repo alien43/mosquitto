@@ -32,6 +32,8 @@ do_test_broker_failure(conf_file, [f"listener {port}","accept_protocol_versions"
 
 do_test_broker_failure(conf_file, ["plugin_opt_inval string"], port, 3, "Error: The 'plugin_opt_inval' option requires plugin/global_plugin/plugin_load to be defined first.") # plugin_opt_ without plugin
 do_test_broker_failure(conf_file, ["plugin c/auth_plugin.so","plugin_opt_ string"], port, 3, "Error: Invalid 'plugin_opt_' config option.") # Incomplete plugin_opt_
+do_test_broker_failure(conf_file, ["plugin c/auth_plugin.so","plugin_opt_a"], port, 3, "Error: Empty 'a' value in configuration.") # Empty 1-char plugin_opt_
+do_test_broker_failure(conf_file, ["plugin c/auth_plugin.so","plugin_opt_db"], port, 3, "Error: Empty 'db' value in configuration.") # Empty 2-char plugin_opt_
 do_test_broker_failure(conf_file, ["plugin c/auth_plugin.so","plugin_opt_test"], port, 3, "Error: Empty 'test' value in configuration.") # Empty plugin_opt_
 
 if mosq_test.check_features(["INC_BRIDGE_SUPPORT"]):
