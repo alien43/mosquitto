@@ -15,8 +15,16 @@ int mosquitto_auth_plugin_version(void)
 int mosquitto_auth_plugin_init(void **user_data, struct mosquitto_opt *auth_opts, int auth_opt_count)
 {
 	(void)user_data;
-	(void)auth_opts;
-	(void)auth_opt_count;
+
+	if(auth_opt_count != 2){
+		return MOSQ_ERR_INVAL;
+	}
+	if(strcmp(auth_opts[0].key, "a") || strcmp(auth_opts[0].value, "val1")){
+		return MOSQ_ERR_INVAL;
+	}
+	if(strcmp(auth_opts[1].key, "db") || strcmp(auth_opts[1].value, "val2")){
+		return MOSQ_ERR_INVAL;
+	}
 
 	return MOSQ_ERR_SUCCESS;
 }

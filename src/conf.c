@@ -1143,8 +1143,8 @@ static int config__read_file_core(struct mosquitto__config *config, bool reload,
 					}else{
 						prefix_len = strlen("plugin_opt_");
 					}
-					if(strlen(token) < prefix_len + 3){
-						/* auth_opt_ == 9, + one digit key == 10, + one space == 11, + one value == 12 */
+					if(strlen(token) < prefix_len + 1){
+						/* auth_opt_ == 9, + one digit key == 10 */
 						log__printf(NULL, MOSQ_LOG_ERR, "Error: Invalid 'plugin_opt_' config option.");
 						return MOSQ_ERR_INVAL;
 					}
